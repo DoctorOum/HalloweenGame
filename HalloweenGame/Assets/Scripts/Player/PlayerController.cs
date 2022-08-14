@@ -9,10 +9,13 @@ public class PlayerController : MonoBehaviour
 
     public float playerSpeed;
 
+    public GameObject PixelRenderCam;
+
     private void Awake()
     {
         playerInput = new PlayerInputs();
         rb = GetComponent<Rigidbody>();
+        playerInput.UI.SwapPixelCamera.performed += _ => SwapCameras();
     }
 
     private void OnEnable()
@@ -29,5 +32,17 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 direction = playerInput.PlayerMovement.Move.ReadValue<Vector2>();
         rb.velocity = new Vector3(direction.x, 0, direction.y) * playerSpeed;
+    }
+
+    void SwapCameras()
+    {
+        if (!PixelRenderCam.activeSelf)
+        {
+            PixelRenderCam.SetActive(true);
+        }
+        else if(PixelRenderCam.activeSelf)
+        {
+            PixelRenderCam.SetActive(false);
+        }
     }
 }

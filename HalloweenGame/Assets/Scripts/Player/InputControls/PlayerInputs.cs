@@ -195,6 +195,15 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapPixelCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""8a70b5b7-d004-4a02-8a51-887017329e8d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -217,6 +226,17 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""GamePad"",
                     ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4db7097b-9167-4a83-8038-89c38b94bf9b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard and Mouse"",
+                    ""action"": ""SwapPixelCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -259,6 +279,7 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Interact = m_UI.FindAction("Interact", throwIfNotFound: true);
+        m_UI_SwapPixelCamera = m_UI.FindAction("SwapPixelCamera", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -352,11 +373,13 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_UI;
     private IUIActions m_UIActionsCallbackInterface;
     private readonly InputAction m_UI_Interact;
+    private readonly InputAction m_UI_SwapPixelCamera;
     public struct UIActions
     {
         private @PlayerInputs m_Wrapper;
         public UIActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Interact => m_Wrapper.m_UI_Interact;
+        public InputAction @SwapPixelCamera => m_Wrapper.m_UI_SwapPixelCamera;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -369,6 +392,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_UIActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnInteract;
+                @SwapPixelCamera.started -= m_Wrapper.m_UIActionsCallbackInterface.OnSwapPixelCamera;
+                @SwapPixelCamera.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnSwapPixelCamera;
+                @SwapPixelCamera.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnSwapPixelCamera;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -376,6 +402,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @SwapPixelCamera.started += instance.OnSwapPixelCamera;
+                @SwapPixelCamera.performed += instance.OnSwapPixelCamera;
+                @SwapPixelCamera.canceled += instance.OnSwapPixelCamera;
             }
         }
     }
@@ -405,5 +434,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         void OnInteract(InputAction.CallbackContext context);
+        void OnSwapPixelCamera(InputAction.CallbackContext context);
     }
 }
