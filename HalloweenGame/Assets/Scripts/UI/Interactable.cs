@@ -6,18 +6,54 @@ public class Interactable : MonoBehaviour
 {
     public GameObject MainCam;
     public GameObject interactableCanvas;
-    // Start is called before the first frame update
-    void Start()
+
+    private PlayerInputs playerInputs;
+
+    private void OnEnable()
     {
-        
+        playerInputs.Enable();
+    }
+    private void OnDisable()
+    {
+        playerInputs.Disable();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        if (interactableCanvas != null)
+        interactableCanvas.SetActive(false);
+        MainCam = GameObject.FindGameObjectWithTag("MainCamera");
+        playerInputs = new PlayerInputs();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
         {
-            interactableCanvas.transform.LookAt(MainCam.transform);
+            interactableCanvas.SetActive(true);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if (interactableCanvas != null)
+            {
+                interactableCanvas.transform.LookAt(MainCam.transform);
+            }
+
+            if (playerInputs.UI.Interact.IsPressed())
+            {
+                interactableCanvas.SetActive(false);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            interactableCanvas.SetActive(false);
         }
     }
 }
