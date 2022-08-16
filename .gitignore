@@ -58,3 +58,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+*.dwlt
+*.dwlt
+HalloweenGame/UserSettings/Layouts/default-2021.dwlt
+HalloweenGame/UserSettings/Layouts/CurrentMaximizeLayout.dwlt
