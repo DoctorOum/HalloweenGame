@@ -1,0 +1,23 @@
+﻿title: Start
+---
+Player: *Rings Door Bell* #line:0a789e7 
+
+CandyPasser: Hello, what a cute costumes! #line:0e0654b 
+
+-> Thank you! #line:04c01f3 
+    <<jump SaidThankYou>>
+-> Trick or treat! #line:071ce68 
+-> Candy please! #line:00b04e4 
+-> Give me all the candy! #line:04541c5 
+
+CandyPasser: Here is some candy. #line:037325d 
+===
+
+title: SaidThankYou
+---
+CandyPasser: What a polite kid #line:0115378 
+-> Trick or treat! #line:0267096 
+-> Candy please! #line:03cefd7 
+
+CandyPasser: For being polite you get an extra piece of candy, here you go. #line:064577c 
+===

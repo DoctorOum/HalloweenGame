@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     public float turnSpeed = 0.5f;
     float timeCount = 0;
 
+    public Yarn.Unity.DialogueRunner dialogueRunner;
+
     private void Awake()
     {
         playerInput = new PlayerInputs();
@@ -37,9 +39,11 @@ public class PlayerController : MonoBehaviour
     {
         //Gets input from player and converts into a vector
         Vector2 direction = playerInput.PlayerMovement.Move.ReadValue<Vector2>();
-        rb.velocity = new Vector3(direction.x, 0, direction.y) * playerSpeed;
+        if (!dialogueRunner.IsDialogueRunning)
+            rb.velocity = new Vector3(direction.x, 0, direction.y) * playerSpeed;
 
-        //if moving rotate character
+
+        //if moving && not in any dialogue rotate character
         if (rb.velocity.magnitude >= 0.1)
         {
             animator.SetBool("isMoving", true);
