@@ -1,13 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Yarn.Unity;
 
 public class Interactable : MonoBehaviour
 {
+    public DialogueRunner dialogueRunner;
+    public CanvasGroup lineViewer;
+
     public GameObject MainCam;
     public GameObject interactableCanvas;
 
     private PlayerInputs playerInputs;
+
+    private bool finishedTalking = false;
 
     private void OnEnable()
     {
@@ -24,12 +30,19 @@ public class Interactable : MonoBehaviour
         MainCam = GameObject.FindGameObjectWithTag("MainCamera");
         playerInputs = new PlayerInputs();
     }
+    public void DialoguedFinsihed()
+    {
+        finishedTalking = true;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            interactableCanvas.SetActive(true);
+            if (lineViewer.alpha <= 0 && !finishedTalking && !dialogueRunner.IsDialogueRunning)
+            {
+                interactableCanvas.SetActive(true);
+            }
         }
     }
 
@@ -44,7 +57,14 @@ public class Interactable : MonoBehaviour
 
             if (playerInputs.UI.Interact.IsPressed())
             {
-                interactableCanvas.SetActive(false);
+                
+                if (lineViewer.alpha <= 0 && !finishedTalking && !dialogueRunner.IsDialogueRunning)
+                {   //Floating ui turned off
+                    interactableCanvas.SetActive(false);
+
+                    //Starts running dialouge if dialouge ui is off and not finished talking
+                    dialogueRunner.StartDialogue(dialogueRunner.startNode);
+                }
             }
         }
     }
@@ -54,6 +74,11 @@ public class Interactable : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             interactableCanvas.SetActive(false);
+            //dialogueRunner.OnViewRequestedInterrupt();
+            if (dialogueRunner.IsDialogueRunning && !finishedTalking)
+            {
+                dialogueRunner.Stop();
+            }
         }
     }
 }
