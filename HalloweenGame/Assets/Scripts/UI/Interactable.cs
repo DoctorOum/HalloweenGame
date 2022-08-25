@@ -5,6 +5,8 @@ using Yarn.Unity;
 
 public class Interactable : MonoBehaviour
 {
+    public static Interactable Instance { get; private set; }
+
     public DialogueRunner dialogueRunner;
     public CanvasGroup lineViewer;
 
@@ -23,25 +25,36 @@ public class Interactable : MonoBehaviour
     {
         playerInputs.Disable();
     }
+    private void OnDestroy()
+    {
+        if (Instance != null)
+        {
+            Destroy(Instance);
+        }
+    }
 
     private void Awake()
-    {
-        interactableCanvas.SetActive(false);
+    {   
+        if(Instance = null)
+        {
+            Instance = this;
+        }
+        Instance.interactableCanvas.SetActive(false);
         MainCam = GameObject.FindGameObjectWithTag("MainCamera");
         playerInputs = new PlayerInputs();
     }
     public void DialoguedFinsihed()
     {
-        finishedTalking = true;
+        Instance.finishedTalking = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (lineViewer.alpha <= 0 && !finishedTalking && !dialogueRunner.IsDialogueRunning)
+            if (lineViewer.alpha <= 0 && !Instance.finishedTalking && !dialogueRunner.IsDialogueRunning)
             {
-                interactableCanvas.SetActive(true);
+                Instance.interactableCanvas.SetActive(true);
             }
         }
     }
@@ -50,9 +63,9 @@ public class Interactable : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (interactableCanvas != null)
+            if (Instance.interactableCanvas != null)
             {
-                interactableCanvas.transform.LookAt(MainCam.transform);
+                Instance.interactableCanvas.transform.LookAt(MainCam.transform);
             }
 
             if (playerInputs.UI.Interact.IsPressed())
@@ -60,7 +73,7 @@ public class Interactable : MonoBehaviour
                 
                 if (lineViewer.alpha <= 0 && !finishedTalking && !dialogueRunner.IsDialogueRunning)
                 {   //Floating ui turned off
-                    interactableCanvas.SetActive(false);
+                    Instance.interactableCanvas.SetActive(false);
 
                     //Starts running dialouge if dialouge ui is off and not finished talking
                     dialogueRunner.StartDialogue(dialogueRunner.startNode);
@@ -73,7 +86,7 @@ public class Interactable : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            interactableCanvas.SetActive(false);
+            Instance.interactableCanvas.SetActive(false);
             //dialogueRunner.OnViewRequestedInterrupt();
             if (dialogueRunner.IsDialogueRunning && !finishedTalking)
             {
